@@ -42,19 +42,23 @@ export function Card({id,title, link, type, onDelete}: CardProps){
                     <div className="p-2 text-gray-600 dark:text-slate-400">
                         <button
                             onClick={async () => {
-                                const res = await fetch(`${BACKEND_URI}/api/v1/brain/share/share`, {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "Authorization": localStorage.getItem("token") || ""
-                                    },
-                                    body: JSON.stringify({ share: true })
-                                });
-                                const data = await res.json();
-                                const hash = data.hash || data.message;
-                                const shareUrl = `${window.location.origin}/${hash}`;
-                                await navigator.clipboard.writeText(shareUrl);
-                                alert("Share link copied!");
+                                try {
+                                    const res = await fetch(`${BACKEND_URI}/api/v1/brain/share`, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            "Authorization": localStorage.getItem("token") || ""
+                                        },
+                                        body: JSON.stringify({ share: true })
+                                    });
+                                    const data = await res.json();
+                                    const hash = data.hash || data.message;
+                                    const shareUrl = `${window.location.origin}/${hash}`;
+                                    await navigator.clipboard.writeText(shareUrl);
+                                    alert("Share link copied!");
+                                } catch {
+                                    alert("Failed to copy share link.");
+                                }
                             }}
                             className="p-2 text-gray-600 hover:text-blue-500 dark:text-slate-400 dark:hover:text-blue-400 transition cursor-pointer"
                         >
@@ -64,7 +68,19 @@ export function Card({id,title, link, type, onDelete}: CardProps){
                     </div>
                     {onDelete && id && (
                         <button
-                            onClick={() => onDelete(id)}
+                            onClick={async () => {
+                                try {
+                                    await fetch(`${BACKEND_URI}/api/v1/content/delete/${id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "Authorization": localStorage.getItem("token") || ""
+                                        }
+                                    });
+                                    onDelete(id);
+                                } catch {
+                                    alert("Failed to delete content.");
+                                }
+                            }}
                             className="p-2 text-gray-400 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition cursor-pointer"
                         >
                             <DeleteIcon size="md" />

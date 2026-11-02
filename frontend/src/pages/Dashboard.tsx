@@ -68,7 +68,7 @@ export function Dashboard() {
       onFilter={setActiveFilter}
       activeFilter={activeFilter}
     />
-    <div className="p-4 md:ml-72 min-h-screen bg-gray-100 dark:bg-slate-900 border-1 dark:border-slate-800 transition-colors">
+    <div className="p-4 md:ml-72 min-h-screen bg-gray-100 dark:bg-slate-900 border-2 dark:border-slate-800 transition-colors">
       <ContentModal open={modalOpen} onClose={() => {
         setModalOpen(false);
       }} />

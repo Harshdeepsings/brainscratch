@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { CloseIcon } from "./icons/CloseIcon";
 import { Input } from "./InputComponent";
 import { Button } from "./ui/Button";
@@ -18,16 +18,19 @@ enum ContentType {
 export function ContentModal({open, onClose}: ContentModalProps){
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
-    const [type, setType] = useState(ContentType.YouTube)
+    const [type, setType] = useState(ContentType.YouTube);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
 
     async function addContent() {
-       const title = titleRef.current?.value; 
-       const link = linkRef.current?.value; 
+       const title = titleRef.current?.value;
+       const link = linkRef.current?.value;
 
-       try{
-            await axios.post(`${BACKEND_URI}/api/v1/content/post`,{
+       setError(null);
+       setLoading(true);
+
+       try {
+           await axios.post(`${BACKEND_URI}/api/v1/content/post`,{
                 link,
                 title,
                 type
@@ -37,12 +40,12 @@ export function ContentModal({open, onClose}: ContentModalProps){
                 }
             })
             onClose();
-        
-        }catch(e: any){
-                setError(e.response?.data?.message || "Incorrect credentials");
-            } finally {
-                setLoading(false);
-            }
+        } catch(e: any) {
+            const msg = e.response?.data?.message || "Failed to add content. Please try again.";
+            setError(msg);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return <div>
@@ -74,12 +77,14 @@ export function ContentModal({open, onClose}: ContentModalProps){
                                 
                         </div>
 
-                        {error && (<div className="text-red-500 text-sm text-center pt-2">
+                        {error && (
+                            <div className="text-red-500 text-sm text-center pb-2">
                                 {error}
-                            </div>)}
+                            </div>
+                        )}
 
                         <div className="flex justify-center rounded pt-2">
-                            <Button onClick= {addContent} loading= {loading} variant="primary" text="Submit" size="lg" />
+                            <Button onClick={addContent} loading={loading} variant="primary" text="Submit" size="lg" />
                         </div>
                     </div>
                 </div>
