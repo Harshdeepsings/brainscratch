@@ -32,7 +32,4 @@ Brainly is a full-stack content-sharing platform that allows users to create, or
 - JWT
 - bcrypt
 - Zod
-
   
-- Zod
-
