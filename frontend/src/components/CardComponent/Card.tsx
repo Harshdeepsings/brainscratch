@@ -9,9 +9,9 @@ interface CardProps {
     id?: string;
     title: string;
     link: string;
-    type: "twitter" | "youtube" ;
+    type: "twitter" | "youtube";
+    tags?: { _id: string; title: string }[];
     onDelete?: (id: string) => void;
-
 };
 
 function getYoutubeEmbedUrl(url: string) {
@@ -21,7 +21,7 @@ function getYoutubeEmbedUrl(url: string) {
 }
 
 
-export function Card({id,title, link, type, onDelete}: CardProps){
+export function Card({id, title, link, type, tags, onDelete}: CardProps){
     useEffect(() => {
         if (type === "twitter") {
             (window as any).twttr?.widgets?.load();
@@ -98,6 +98,19 @@ export function Card({id,title, link, type, onDelete}: CardProps){
                     <a href={link.replace("x.com", "twitter.com")} />
                 </blockquote></div>}
             </div>
+
+            {tags && tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-2 shrink-0">
+                    {tags.map(tag => (
+                        <span
+                            key={tag._id}
+                            className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 text-xs px-2 py-0.5 rounded-full"
+                        >
+                            #{tag.title}
+                        </span>
+                    ))}
+                </div>
+            )}
         </div>
     </div>
 };

@@ -11,6 +11,7 @@ interface ContentItem {
     title: string;
     link: string;
     type: "twitter" | "youtube";
+    tags?: { _id: string; title: string }[];
 }
 
 export function Share() {
@@ -102,6 +103,7 @@ export function Share() {
                             type={item.type}
                             link={item.link}
                             title={item.title}
+                            tags={item.tags}
                         />
                     ))}
                 </div>

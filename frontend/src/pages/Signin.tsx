@@ -3,7 +3,7 @@ import { Button } from "../components/ui/Button"
 import axios from "axios";
 import { BACKEND_URI } from "../config";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Signin = () => {
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -53,6 +53,13 @@ export const Signin = () => {
                 <div className="flex justify-center items-center rounded pt-4">
                     <Button onClick={signin} loading={loading} variant="primary" size="lg" text="Signin" />
                 </div>
+
+                <p className="text-center text-xs text-gray-500 dark:text-slate-400 pt-3">
+                    Don't have an account?{" "}
+                    <Link to="/signup" className="text-purple-600 dark:text-purple-400 hover:underline font-medium">
+                        Sign up
+                    </Link>
+                </p>
             </div>
         </div>
             

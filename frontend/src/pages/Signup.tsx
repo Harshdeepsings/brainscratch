@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../components/InputComponent"
 import { Button } from "../components/ui/Button"
 import axios from "axios";
@@ -58,6 +58,13 @@ export const Signup = () => {
                 <div className="flex justify-center items-center rounded pt-4">
                     <Button onClick={signup} loading={loading} variant="primary" size="lg" text="Signup" />
                 </div>
+
+                <p className="text-center text-xs text-gray-500 dark:text-slate-400 pt-3">
+                    Already have an account?{" "}
+                    <Link to="/signin" className="text-purple-600 dark:text-purple-400 hover:underline font-medium">
+                        Sign in
+                    </Link>
+                </p>
             </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ContentModal } from '../components/ContentModal';
 import { Card } from '../components/CardComponent/Card';
 import { PlusIcon } from '../components/icons/PlusIcon';
@@ -12,6 +13,7 @@ import axios from 'axios';
 import { BACKEND_URI } from '../config';
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"twitter" | "youtube" | null>(null);
@@ -20,8 +22,30 @@ export function Dashboard() {
   const [shareLoading, setShareLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/signin");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     refresh();
-  },[modalOpen])
+  },[modalOpen]);
+
+  async function handleLogout() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        await axios.post(`${BACKEND_URI}/api/v1/user/logout`, {}, {
+          headers: { Authorization: token }
+        });
+      } catch (err) {
+        console.error("Logout request error:", err);
+      }
+    }
+    localStorage.removeItem("token");
+    navigate("/signin");
+  }
 
   async function handleShare() {
     try {
@@ -97,6 +121,7 @@ export function Dashboard() {
             setModalOpen(true)
           }} variant="secondary" size='lg' startIcon={<PlusIcon size= "sm" />} text= "Add Contents" />
           <Button onClick={handleShare} loading={shareLoading} variant="primary" size='lg' startIcon={<ShareIcon size= "sm" />} text= "Share" />
+          <Button onClick={handleLogout} variant="secondary" size='lg' text="Logout" />
         </div>
       </div>
 
@@ -110,12 +135,13 @@ export function Dashboard() {
             No {activeFilter ?? ""} content found.
           </div>
         )}
-        {filteredContents.map(({_id, type, link, title}, idx) => <Card
+        {filteredContents.map(({_id, type, link, title, tags}, idx) => <Card
         key={_id ?? idx}
         id={_id}
         type={type}
         link={link}
         title={title}
+        tags={tags}
         />)}
         
       </div>
