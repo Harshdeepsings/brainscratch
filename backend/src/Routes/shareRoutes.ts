@@ -23,6 +23,7 @@ shareRoutes.post("/share", UserMiddleware, async (req: AuthRequest, res: Respons
             });
             if (linkExists){
                 res.json({
+                    hash: linkExists.hash,
                     message: linkExists.hash
                 })
                 return;
@@ -74,7 +75,7 @@ shareRoutes.get("/:sharelink", async (req: AuthRequest, res: Response) => {
 
         const content = await ContentModel.find({
             userId: link.userId
-        })
+        }).populate("tags", "title");
 
         const user = await UserModel.findOne({
             _id: link.userId

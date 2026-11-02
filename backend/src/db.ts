@@ -4,9 +4,9 @@ import mongoose, { model, Schema } from "mongoose";
 
 
 const UserSchema = new Schema({
-    username : { type: String, unique: true, required: true},
+    username : { type: String, unique: true, required: true, trim: true},
     password : { type: String, required: true},
-    email : { type: String, unique: true, required: true}
+    email : { type: String, unique: true, required: true, trim: true, lowercase: true}
 });
 
 const ContentSchema = new Schema({
@@ -28,7 +28,8 @@ const LinkSchema = new Schema({
     userId: {type: mongoose.Types.ObjectId, ref: 'User', required: true , unique: true}
 })
 
+
 export const UserModel = model("User", UserSchema);
 export const ContentModel = model("Content", ContentSchema);
 export const TagModel = model("Tag", TagSchema);
-export const LinkModel = model("Link", LinkSchema);
+export const LinkModel = model("Link", LinkSchema);

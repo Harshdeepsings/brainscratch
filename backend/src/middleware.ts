@@ -26,9 +26,11 @@ export function UserMiddleware(req: AuthRequest, res: Response, next: NextFuncti
         return;
     }
 
-    
+    const token = typeof header === "string" && header.startsWith("Bearer ")
+        ? header.slice(7).trim()
+        : (header as string);
 
-    if (tokenBlacklist.has(header as string)) {
+    if (tokenBlacklist.has(header as string) || tokenBlacklist.has(token)) {
         res.status(401).json({
             message: "token has been invalidated, please login again"
         });
@@ -36,12 +38,9 @@ export function UserMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     }
 
     try{
-        
-        const decoded = jwt.verify(header as string, process.env.JWT_SECRET as string) as JwtPayload;
-        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
         req.userId = decoded.id;
         next();
-    
     }catch(err){
         res.status(401).json({
             message: "invalid or expired token"

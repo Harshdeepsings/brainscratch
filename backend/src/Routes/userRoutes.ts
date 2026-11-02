@@ -18,9 +18,8 @@ const authLimiter = rateLimit({
     legacyHeaders: false
 });
 
-userRoutes.use(authLimiter);
-
-userRoutes.post("/signup", async function(req: AuthRequest, res: Response){
+// Apply rate limiting specifically to authentication endpoints
+userRoutes.post("/signup", authLimiter, async function(req: AuthRequest, res: Response){
     
     const ParsedDataWithSuccess = UserSchema.safeParse(req.body);
 
@@ -32,9 +31,7 @@ userRoutes.post("/signup", async function(req: AuthRequest, res: Response){
             return
         }
 
-        const username = req.body.username;
-        const password = req.body.password;
-        const email = req.body.email;
+        const { username, password, email } = ParsedDataWithSuccess.data;
 
         const hashedpassword = await bcrypt.hash(password, 10);
         try{
@@ -63,7 +60,7 @@ userRoutes.post("/signup", async function(req: AuthRequest, res: Response){
 });
 
 
-userRoutes.post("/signin", async function(req: AuthRequest, res: Response){
+userRoutes.post("/signin", authLimiter, async function(req: AuthRequest, res: Response){
     const username = req.body.username;
     const password = req.body.password;
 
@@ -121,8 +118,7 @@ userRoutes.get("/content", UserMiddleware, async (req: AuthRequest , res: Respon
         const userId = req?.userId;
         const content = await ContentModel.find({
             userId: userId,
-
-        }).populate("userId" ,"username")
+        }).populate("userId", "username").populate("tags", "title")
 
         res.json({
             content
