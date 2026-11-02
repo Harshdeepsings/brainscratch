@@ -46,8 +46,8 @@ shareRoutes.post("/share", UserMiddleware, async (req: AuthRequest, res: Respons
             };
     
     }catch(e){
-        res.json({
-        message: "not authorized"
+        res.status(500).json({
+            message: "Internal server error"
         });
     }
 });
@@ -56,9 +56,9 @@ shareRoutes.get("/:sharelink", async (req: AuthRequest, res: Response) => {
     const hash = req.params.sharelink;
 
     try{
-        if(typeof hash !== "string"){
+        if(typeof hash !== "string" || !hash.trim()){
             return res.status(400).json({
-                message: "Invalid hash"
+                message: "Invalid share link"
             });
         }
 
@@ -67,10 +67,9 @@ shareRoutes.get("/:sharelink", async (req: AuthRequest, res: Response) => {
         })
 
         if(!link){
-            res.status(411).json({
-                message: "Incorrect Input"
+            return res.status(404).json({
+                message: "Share link not found"
             });
-            return;
         }
 
         const content = await ContentModel.find({
@@ -81,13 +80,19 @@ shareRoutes.get("/:sharelink", async (req: AuthRequest, res: Response) => {
             _id: link.userId
         })
 
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
         res.json({
-            username: user?.username,
+            username: user.username,
             content: content
         })
     }catch(e){
-        res.json({
-            message: "not authorized"
+        res.status(500).json({
+            message: "Internal server error"
         })
     }
 

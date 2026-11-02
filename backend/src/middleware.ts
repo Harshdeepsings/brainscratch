@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+// In-memory blacklist for invalidated tokens (cleared on server restart)
+export const tokenBlacklist = new Set<string>();
+
 
 export interface AuthRequest extends Request {
     userId?: string
@@ -24,6 +27,13 @@ export function UserMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     }
 
     
+
+    if (tokenBlacklist.has(header as string)) {
+        res.status(401).json({
+            message: "token has been invalidated, please login again"
+        });
+        return;
+    }
 
     try{
         

@@ -4,9 +4,21 @@ import { UserSchema }  from "../userValidation";
 import {UserModel, ContentModel, } from "../db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserMiddleware, AuthRequest } from "../middleware";
+import { UserMiddleware, AuthRequest, tokenBlacklist } from "../middleware";
+import rateLimit from "express-rate-limit";
 
 const userRoutes = Router();
+
+// Rate limit: max 20 auth attempts per 15 minutes per IP
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    message: { message: "Too many attempts, please try again later." },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+userRoutes.use(authLimiter);
 
 userRoutes.post("/signup", async function(req: AuthRequest, res: Response){
     
@@ -44,7 +56,7 @@ userRoutes.post("/signup", async function(req: AuthRequest, res: Response){
         }
 
         res.status(500).json({
-            message: "Something went wrong!!!!"
+            message: "Something went wrong"
         })
     }
 
@@ -55,12 +67,12 @@ userRoutes.post("/signin", async function(req: AuthRequest, res: Response){
     const username = req.body.username;
     const password = req.body.password;
 
-    if (!username || !password) {
+    // Strict type check to prevent injection via non-string values
+    if (!username || typeof username !== "string" || !password || typeof password !== "string") {
         return res.status(400).json({ 
-            message: "Username and password required" 
+            message: "Username and password are required and must be strings" 
         });
     }
-
 
     try{
         const user = await UserModel.findOne({
@@ -78,7 +90,7 @@ userRoutes.post("/signin", async function(req: AuthRequest, res: Response){
         if (user && passwordMatch){
             const token = jwt.sign({
                 id: user._id.toString()
-            }, process.env.JWT_SECRET as string);
+            }, process.env.JWT_SECRET as string, { expiresIn: "7d" });  // Token expires in 7 days
 
             res.json({
                 token
@@ -100,9 +112,8 @@ userRoutes.post("/signin", async function(req: AuthRequest, res: Response){
 userRoutes.get("/content", UserMiddleware, async (req: AuthRequest , res: Response)=>{
 
     if( !req.userId ){
-        console.log("db error");
         res.status(401).json({
-            message: "db error"
+            message: "Unauthorized"
         });
         return;
     }
@@ -117,8 +128,8 @@ userRoutes.get("/content", UserMiddleware, async (req: AuthRequest , res: Respon
             content
         })
     }catch(e){
-        res.json({
-            message: "not authorized"
+        res.status(500).json({
+            message: "Internal server error"
         })
     }
     
@@ -126,5 +137,14 @@ userRoutes.get("/content", UserMiddleware, async (req: AuthRequest , res: Respon
 });
 
 
+userRoutes.post("/logout", UserMiddleware, (req: AuthRequest, res: Response) => {
+    const token = req.headers["authorization"] as string;
+
+    tokenBlacklist.add(token);
+
+    res.status(200).json({
+        message: "Logged out successfully"
+    });
+});
 
 export default userRoutes;

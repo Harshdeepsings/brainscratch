@@ -2,47 +2,19 @@ import { Router } from "express";
 import { Response } from "express";
 import { UserMiddleware, AuthRequest } from "../middleware";
 import { ContentModel } from "../db";
+import { z } from "zod";
 
 
 const contentRoutes = Router();
 
-contentRoutes.post("/post", UserMiddleware, async(req: AuthRequest, res: Response)=>{
-    const title = req.body.title;
-    const link = req.body.link;
-    const type = req.body.type;
-    
-
-    try{
-
-        if (!req.userId) {
-        return res.status(401).json({
-            message: "Unauthorized"
-        });
-    }
-
-        await ContentModel.create({
-            link,
-            type,
-            title,
-            userId: req.userId,
-            tags: []
-
-        })
-
-        res.json({
-            message: "content added"
-        })
-    }catch(e){
-        res.json({
-            message: "not authorized"
-        })
-    }
-
-   
+// Validation schema for content creation
+const ContentSchema = z.object({
+    title: z.string().min(1, "Title is required").max(200).trim(),
+    link: z.string().url("Link must be a valid URL").trim(),
+    type: z.enum(["youtube", "twitter"], { message: "Type must be 'youtube' or 'twitter'" })
 });
 
-contentRoutes.delete("/delete", UserMiddleware, async (req: AuthRequest, res: Response)=>{
-    const contentId = req.body.contentId;
+contentRoutes.post("/post", UserMiddleware, async(req: AuthRequest, res: Response)=>{
 
     if (!req.userId) {
         return res.status(401).json({
@@ -50,9 +22,44 @@ contentRoutes.delete("/delete", UserMiddleware, async (req: AuthRequest, res: Re
         });
     }
 
-    if (!contentId) {
+    const parsed = ContentSchema.safeParse(req.body);
+    if (!parsed.success) {
         return res.status(400).json({
-            message: "contentId is required"
+            message: "Invalid input",
+            errors: parsed.error.flatten().fieldErrors
+        });
+    }
+
+    const { title, link, type } = parsed.data;
+
+    try{
+        await ContentModel.create({
+            link,
+            type,
+            title,
+            userId: req.userId,
+            tags: []
+        })
+
+        res.status(201).json({
+            message: "content added"
+        })
+    }catch(e){
+        res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+
+   
+});
+
+// Using URL param instead of req.body for DELETE (avoids proxy stripping issues)
+contentRoutes.delete("/delete/:contentId", UserMiddleware, async (req: AuthRequest, res: Response)=>{
+    const contentId = req.params.contentId;
+
+    if (!req.userId) {
+        return res.status(401).json({
+            message: "Unauthorized"
         });
     }
 
@@ -72,8 +79,8 @@ contentRoutes.delete("/delete", UserMiddleware, async (req: AuthRequest, res: Re
             message: "content deleted"
         })
     }catch(e){
-        res.json({
-            message: "not authorized"
+        res.status(500).json({
+            message: "Internal server error"
         })
     }
     

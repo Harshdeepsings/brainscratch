@@ -20,8 +20,7 @@ const ContentSchema = new Schema({
 });
 
 const TagSchema = new Schema({
-    title: [{type: String, unique: true, trim: true, lowercase: true}]
-    
+    title: { type: String, unique: true, trim: true, lowercase: true }
 });
 
 const LinkSchema = new Schema({
