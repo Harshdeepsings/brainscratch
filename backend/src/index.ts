@@ -23,7 +23,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({ 
-    origin: FRONTEND_URL, 
+    origin: FRONTEND_URL ? FRONTEND_URL.replace(/\/+$/, "") : true, 
     credentials: true 
 }));
 

@@ -69,9 +69,14 @@ export function Dashboard() {
 
       const shareUrl = `${window.location.origin}/${hash}`;
 
-      await navigator.clipboard.writeText(shareUrl);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("Share link copied to clipboard: " + shareUrl);
+      } else {
+        prompt("Copy your share link:", shareUrl);
+      }
 
-      alert("Share link copied to clipboard: " + shareUrl);
+
 
     } catch (e: any) {
       console.error("Share error:", e);

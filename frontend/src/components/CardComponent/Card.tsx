@@ -52,12 +52,23 @@ export function Card({id, title, link, type, tags, onDelete}: CardProps){
                                         body: JSON.stringify({ share: true })
                                     });
                                     const data = await res.json();
-                                    const hash = data.hash || data.message;
+                                    if (!res.ok) {
+                                        throw new Error(data?.message || "Failed to generate share link");
+                                    }
+                                    const hash = data.hash;
+                                    if (!hash) {
+                                        throw new Error("No share hash returned");
+                                    }
                                     const shareUrl = `${window.location.origin}/${hash}`;
-                                    await navigator.clipboard.writeText(shareUrl);
-                                    alert("Share link copied!");
-                                } catch {
-                                    alert("Failed to copy share link.");
+                                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                                        await navigator.clipboard.writeText(shareUrl);
+                                        alert("Share link copied: " + shareUrl);
+                                    } else {
+                                        prompt("Copy your share link:", shareUrl);
+                                    }
+
+                                } catch (err: any) {
+                                    alert(err?.message || "Failed to copy share link.");
                                 }
                             }}
                             className="p-2 text-gray-600 hover:text-blue-500 dark:text-slate-400 dark:hover:text-blue-400 transition cursor-pointer"
@@ -77,7 +88,7 @@ export function Card({id, title, link, type, tags, onDelete}: CardProps){
                                         }
                                     });
                                     onDelete(id);
-                                } catch {
+                                } catch (err: any) {
                                     alert("Failed to delete content.");
                                 }
                             }}
