@@ -22,7 +22,10 @@ if (!MONGODB_URI){
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: FRONTEND_URL ? FRONTEND_URL : true, credentials: true }));
+app.use(cors({ 
+    origin: FRONTEND_URL, 
+    credentials: true 
+}));
 
 // Simple traffic counter (must run before routes to count all requests)
 let totalRequests = 0;
