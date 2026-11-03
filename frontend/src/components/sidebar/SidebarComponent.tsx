@@ -33,7 +33,7 @@ export function Sidebar({ isOpen = false, onClose, onFilter, activeFilter }: Sid
                                 <LogoIcon size="lg" />
                             </div>
                             <div className="flex text-3xl font-bold text-gray-900 dark:text-white">
-                                Brainly
+                                Brainscratch
                             </div>
                         </div>
                         {onClose && (

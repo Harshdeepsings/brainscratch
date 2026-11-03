@@ -1,6 +1,6 @@
-# Brainly
+# Brainscratch
 
-Brainly is a full-stack content-sharing platform that allows users to create, organize, and share useful content in one place. Users can publish their thoughts and attach external content such as YouTube videos and X/Twitter posts, making it easier to collect and access useful resources.
+Brainscratch is a full-stack content-sharing platform that allows users to create, organize, and share useful content in one place. Users can publish their thoughts and attach external content such as YouTube videos and X/Twitter posts, making it easier to collect and access useful resources.
 
 ## 🚀 Features
 
@@ -35,7 +35,7 @@ Brainly is a full-stack content-sharing platform that allows users to create, or
 ## 📁 Project Structure
 
 ```text
-Brainly/
+Brainscratch/
 ├── backend/
 │   ├── src/
 │   │   ├── controllers/
