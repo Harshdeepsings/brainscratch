@@ -1,12 +1,20 @@
-export function random(len: number){
-    let options = "abcdefghijklmnopqrstuvwxyz1234567890"
-    let length = options.length;
-    let ans = "";
+import crypto from "crypto";
 
-    for(let i = 0 ; i < len ; i++ ){
-        ans += options[Math.floor(Math.random() * length)]
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890";
 
+/**
+ * Cryptographically secure random alphanumeric string generator
+ * Replaces insecure Math.random() to prevent PRNG seed prediction
+ */
+export function random(len: number): string {
+    const bytes = crypto.randomBytes(len);
+    let result = "";
+    const alphabetLength = ALPHABET.length;
+
+    for (let i = 0; i < len; i++) {
+        const byte = bytes[i] ?? 0;
+        result += ALPHABET[byte % alphabetLength];
     }
 
-    return ans;
+    return result;
 }

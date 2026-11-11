@@ -11,18 +11,14 @@ export const SidebarItems = (props: SidebarItemsProps) => {
     return (
         <div
             onClick={props.onClick}
-            className={`flex py-2 cursor-pointer rounded max-w-48 pl-4 transition-all duration-150 font-medium
+            className={`flex items-center gap-3 py-2 px-3 cursor-pointer rounded-md text-sm font-medium transition-all duration-150
                 ${props.active
-                    ? "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300"
-                    : "hover:bg-gray-200 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
+                    ? "bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-semibold"
+                    : "text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                 }`}
         >
-            <div className="p-2">
-                {props.startIcon}
-            </div>
-            <div className="p-2">
-                {props.text}
-            </div>
+            <span className="shrink-0">{props.startIcon}</span>
+            <span>{props.text}</span>
         </div>
     );
 }

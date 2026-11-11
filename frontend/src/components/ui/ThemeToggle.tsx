@@ -25,11 +25,11 @@ export function ThemeToggle() {
     return (
         <button
             onClick={() => setIsDark(prev => !prev)}
-            className="p-2 sm:py-3.5 sm:px-4 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer transition-colors flex items-center justify-center"
+            className="p-2 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer transition-transform duration-150 ease-out active:scale-[0.95] flex items-center justify-center"
             aria-label="Toggle theme"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
-            {isDark ? <SunIcon size="md" /> : <MoonIcon size="md" />}
+            {isDark ? <SunIcon size="sm" /> : <MoonIcon size="sm" />}
         </button>
     );
 }
