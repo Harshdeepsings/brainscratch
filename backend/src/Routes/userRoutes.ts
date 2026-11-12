@@ -378,7 +378,8 @@ userRoutes.get("/content", UserMiddleware, async (req: AuthRequest, res: Respons
             .select("-__v")
             .populate("userId", "username")
             .populate("tags", "title")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         if (page !== null) {
             query = query.skip((page - 1) * limit).limit(limit);
@@ -406,7 +407,7 @@ userRoutes.get("/profile", UserMiddleware, async (req: AuthRequest, res: Respons
     }
 
     try {
-        const user = await UserModel.findById(req.userId).select("username email avatar googleId password");
+        const user = await UserModel.findById(req.userId).select("username email avatar googleId password").lean();
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }

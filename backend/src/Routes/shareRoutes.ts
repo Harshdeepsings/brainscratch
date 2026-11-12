@@ -75,7 +75,7 @@ shareRoutes.get("/:sharelink", shareLookupLimiter, async (req: AuthRequest, res:
     }
 
     try {
-        const link = await LinkModel.findOne({ hash: hash.trim() });
+        const link = await LinkModel.findOne({ hash: hash.trim() }).lean();
 
         if (!link) {
             return res.status(404).json({ message: "Share link not found" });
@@ -85,9 +85,10 @@ shareRoutes.get("/:sharelink", shareLookupLimiter, async (req: AuthRequest, res:
         const content = await ContentModel.find({ userId: link.userId })
             .select("title link body type tags createdAt")
             .populate("tags", "title")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
-        const user = await UserModel.findOne({ _id: link.userId }).select("username");
+        const user = await UserModel.findOne({ _id: link.userId }).select("username").lean();
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });

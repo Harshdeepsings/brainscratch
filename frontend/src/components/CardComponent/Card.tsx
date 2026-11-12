@@ -263,6 +263,7 @@ export function Card({ id, title, link, body, type, tags, onDelete, onEdit, onTa
                                 className="w-full h-full"
                                 src={embedUrl}
                                 title={title || "YouTube video player"}
+                                loading="lazy"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 referrerPolicy="strict-origin-when-cross-origin"
                                 sandbox="allow-scripts allow-same-origin allow-presentation"
@@ -280,6 +281,7 @@ export function Card({ id, title, link, body, type, tags, onDelete, onEdit, onTa
                                         className="w-full h-full"
                                         src={embedUrl}
                                         title={title || "Instagram post"}
+                                        loading="lazy"
                                         scrolling="no"
                                         sandbox="allow-scripts allow-same-origin"
                                     />
@@ -310,6 +312,7 @@ export function Card({ id, title, link, body, type, tags, onDelete, onEdit, onTa
                                         className="w-full h-full"
                                         src={embedUrl}
                                         title={title || "LinkedIn post"}
+                                        loading="lazy"
                                         sandbox="allow-scripts allow-same-origin"
                                     />
                                 </div>
@@ -349,6 +352,7 @@ export function Card({ id, title, link, body, type, tags, onDelete, onEdit, onTa
                                         className="w-full h-full"
                                         src={embedUrl}
                                         title={title || "Google Docs preview"}
+                                        loading="lazy"
                                         sandbox="allow-scripts allow-same-origin allow-popups"
                                     />
                                 </div>
@@ -378,6 +382,7 @@ export function Card({ id, title, link, body, type, tags, onDelete, onEdit, onTa
                                         className="w-full h-full"
                                         src={embedUrl}
                                         title={title || "Google Sheets preview"}
+                                        loading="lazy"
                                         sandbox="allow-scripts allow-same-origin allow-popups"
                                     />
                                 </div>

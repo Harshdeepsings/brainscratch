@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useDeferredValue } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ContentModal } from '../components/ContentModal';
@@ -160,36 +160,40 @@ export function Dashboard() {
     }
   }
 
-  const filtered = contents
-    .filter(c => {
-      if (!c) return false;
-      if (!activeFilter) return true;
-      const cType = c.type || "text";
-      if (activeFilter === "docs") {
-        return cType === "googledocs" || cType === "googlesheets";
-      }
-      return cType === activeFilter;
-    })
-    .filter(c => {
-      if (!selectedTag) return true;
-      const targetTag = selectedTag.toLowerCase().replace(/^#+/, "");
-      return c.tags?.some(t => {
-        const titleStr = typeof t === "string" ? t : t?.title || "";
-        return titleStr.toLowerCase().replace(/^#+/, "") === targetTag;
+  const deferredSearch = useDeferredValue(search);
+
+  const filtered = useMemo(() => {
+    return contents
+      .filter(c => {
+        if (!c) return false;
+        if (!activeFilter) return true;
+        const cType = c.type || "text";
+        if (activeFilter === "docs") {
+          return cType === "googledocs" || cType === "googlesheets";
+        }
+        return cType === activeFilter;
+      })
+      .filter(c => {
+        if (!selectedTag) return true;
+        const targetTag = selectedTag.toLowerCase().replace(/^#+/, "");
+        return c.tags?.some(t => {
+          const titleStr = typeof t === "string" ? t : t?.title || "";
+          return titleStr.toLowerCase().replace(/^#+/, "") === targetTag;
+        });
+      })
+      .filter(c => {
+        if (!deferredSearch.trim()) return true;
+        const q = deferredSearch.toLowerCase();
+        const titleMatch = (c.title || "").toLowerCase().includes(q);
+        const bodyMatch = (c.body || "").toLowerCase().includes(q);
+        const linkMatch = (c.link || "").toLowerCase().includes(q);
+        const tagMatch = c.tags?.some(t => {
+          const titleStr = typeof t === "string" ? t : t?.title || "";
+          return titleStr.toLowerCase().includes(q);
+        });
+        return Boolean(titleMatch || bodyMatch || linkMatch || tagMatch);
       });
-    })
-    .filter(c => {
-      if (!search.trim()) return true;
-      const q = search.toLowerCase();
-      const titleMatch = (c.title || "").toLowerCase().includes(q);
-      const bodyMatch = (c.body || "").toLowerCase().includes(q);
-      const linkMatch = (c.link || "").toLowerCase().includes(q);
-      const tagMatch = c.tags?.some(t => {
-        const titleStr = typeof t === "string" ? t : t?.title || "";
-        return titleStr.toLowerCase().includes(q);
-      });
-      return Boolean(titleMatch || bodyMatch || linkMatch || tagMatch);
-    });
+  }, [contents, activeFilter, selectedTag, deferredSearch]);
 
   return (
     <div>

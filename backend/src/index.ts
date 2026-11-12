@@ -11,6 +11,7 @@ import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 import rateLimit from "express-rate-limit";
 
 import userRoutes from "./Routes/userRoutes";
@@ -39,6 +40,7 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false
 }));
 
+app.use(compression());
 app.use(express.json({ limit: "50kb" }));
 
 // CORS
@@ -96,9 +98,9 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Database & Server Initialization
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, { dbName: "brainscratch" })
     .then(() => {
-        console.log("MongoDB connected");
+        console.log(`MongoDB connected to database: ${mongoose.connection.name}`);
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     })
     .catch((err) => {
