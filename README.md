@@ -22,6 +22,7 @@ Brainscratch is a full-stack content-sharing platform that allows users to creat
 - TypeScript
 - Tailwind CSS
 - Vite
+- Motion
 
 ### Backend
 - Node.js
@@ -32,4 +33,6 @@ Brainscratch is a full-stack content-sharing platform that allows users to creat
 - JWT
 - bcrypt
 - Zod
-  
+- Helmet
+- nodemailer
+- express-rate-limiter
