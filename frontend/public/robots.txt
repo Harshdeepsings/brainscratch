@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /signin
+Allow: /signup
+Allow: /privacy
+Allow: /terms
+
+# Disallow private user workspace & API routes
+Disallow: /dashboard
+Disallow: /api/
+
+Sitemap: https://brainscratch.vercel.app/sitemap.xml
+

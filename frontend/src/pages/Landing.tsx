@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogoIcon } from "../components/icons/LogoIcon";
 import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { YoutubeIcon } from "../components/icons/YoutubeIcon";
@@ -8,6 +8,10 @@ import { Notebook } from "../components/icons/NotebookIcon";
 import { ShareIcon } from "../components/icons/ShareIcon";
 
 export function Landing() {
+    useEffect(() => {
+        document.title = "Brainscratch — Your Second Brain for Bookmarks, Notes & Media";
+    }, []);
+
     const [hasToken] = useState(() => {
         if (typeof window === "undefined") return false;
         const token = localStorage.getItem("token");

@@ -49,6 +49,10 @@ export function Dashboard() {
   const [userProfile, setUserProfile] = useState<{ username: string; email: string; avatar: string } | null>(null);
 
   useEffect(() => {
+    document.title = "Your Brain — Brainscratch";
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token || token === "undefined" || token === "null") {
       localStorage.removeItem("token");

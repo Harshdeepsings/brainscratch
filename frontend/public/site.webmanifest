@@ -1,0 +1,23 @@
+{
+  "name": "Brainscratch",
+  "short_name": "Brainscratch",
+  "description": "Your second brain for bookmarks, YouTube videos, X/Twitter threads, and notes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
+

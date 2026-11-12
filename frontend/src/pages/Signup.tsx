@@ -71,6 +71,10 @@ export const Signup = () => {
     }, [navigate]);
 
     useEffect(() => {
+        document.title = "Create Your Second Brain — Brainscratch";
+    }, []);
+
+    useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             navigate("/dashboard");

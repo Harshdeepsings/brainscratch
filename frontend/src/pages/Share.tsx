@@ -36,7 +36,9 @@ export function Share() {
                     : response.data.content ? [response.data.content] : [];
 
                 setContents(fetchedContent);
-                setAuthor(response.data.username || "Anonymous");
+                const brainAuthor = response.data.username || "Anonymous";
+                setAuthor(brainAuthor);
+                document.title = `${brainAuthor}'s Second Brain — Brainscratch`;
             } catch (e: unknown) {
                 const message = axios.isAxiosError(e) && e.response?.data?.message
                     ? e.response.data.message

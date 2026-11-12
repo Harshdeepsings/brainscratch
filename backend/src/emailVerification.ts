@@ -5,23 +5,26 @@ import { VerificationCodeModel } from "./db";
 // Expiration window for time-restricted verification codes (10 minutes)
 export const CODE_EXPIRATION_MS = 10 * 60 * 1000;
 
-// Configure SMTP transport if environment variables are present, otherwise fallback to development console log
-const smtpHost = process.env.SMTP_HOST;
-const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-const smtpUser = process.env.SMTP_USER;
-const smtpPass = process.env.SMTP_PASS;
+// Configure SMTP transport dynamically (strips whitespace from app passwords if present)
+function getTransporter() {
+    const smtpHost = process.env.SMTP_HOST?.trim();
+    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465;
+    const smtpUser = process.env.SMTP_USER?.trim();
+    const smtpPass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, "") : undefined;
 
-const transporter = smtpHost && smtpUser && smtpPass
-    ? nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        auth: {
-            user: smtpUser,
-            pass: smtpPass
-        }
-    })
-    : null;
+    if (smtpHost && smtpUser && smtpPass) {
+        return nodemailer.createTransport({
+            host: smtpHost,
+            port: smtpPort,
+            secure: smtpPort === 465,
+            auth: {
+                user: smtpUser,
+                pass: smtpPass
+            }
+        });
+    }
+    return null;
+}
 
 export type VerificationType = "signup" | "profile_update" | "password_reset";
 
@@ -51,6 +54,7 @@ export async function sendVerificationEmail(email: string, code: string, type: V
         </div>
     `;
 
+    const transporter = getTransporter();
     if (transporter) {
         try {
             await transporter.sendMail({

@@ -67,6 +67,10 @@ export const Signin = () => {
     }, [navigate]);
 
     useEffect(() => {
+        document.title = "Sign In — Brainscratch";
+    }, []);
+
+    useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             navigate("/dashboard");
