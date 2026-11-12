@@ -3,16 +3,80 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  /* Original Brainscratch purple palette & resonant harmonizing shades */
+  --color-purple-100: #ede9fe;
+  --color-purple-200: #ddd6fe;
   --color-purple-300: #e0e7fe;
+  --color-purple-400: #818cf8;
   --color-purple-500: #3e38a7;
   --color-purple-600: #5046e4;
+  --color-purple-700: #4338ca;
+  --color-purple-800: #3730a3;
+  --color-purple-900: #312e81;
+  --color-purple-950: #1e1b4b;
 
-  
+  /* Original surface & neutral shades */
   --color-gray-100: #eeeeef;
   --color-gray-200: #e6e9ed;
   --color-gray-600: #95989c;
 
+  /* Original dark mode architecture */
   --color-dark-bg: #0f172a;
   --color-dark-surface: #1e293b;
   --color-dark-border: #334155;
+}
+
+/* System typography with refined optical tracking */
+html {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
+}
+
+/* Balanced heading typography */
+h1, h2, h3, h4 {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* Body text wrapping without orphan stragglers */
+p {
+  text-wrap: pretty;
+}
+
+/* Themed caret with signature purple */
+input, textarea {
+  caret-color: #5046e4;
+}
+
+/* Text selection in signature purple tint */
+::selection {
+  background: #ddd6fe;
+  color: #1e1b4b;
+}
+
+.dark ::selection {
+  background: #3730a3;
+  color: #ede9fe;
+}
+
+/* Link underline offset */
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* Focus ring in purple */
+*:focus-visible {
+  outline: 2px solid #5046e4;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
