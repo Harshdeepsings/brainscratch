@@ -1,17 +1,14 @@
 {
-  "name": "brainscratch",
+  "name": "brainscratch-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
     "test": "tsx src/urlClassifier.test.ts",
     "start": "node dist/index.js",
     "dev": "npm run build && npm run start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
