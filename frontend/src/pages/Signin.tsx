@@ -78,7 +78,7 @@ export const Signin = () => {
     }, [navigate]);
 
     useEffect(() => {
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || (import.meta.env as unknown as Record<string, string>).GOOGLE_CLIENT_ID;
         if (!clientId) return;
 
         const renderGoogleButton = () => {

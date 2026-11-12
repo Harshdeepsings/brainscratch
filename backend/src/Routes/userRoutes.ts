@@ -23,7 +23,7 @@ const DUMMY_HASH = "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
 
 // Google OAuth client helper (reads environment lazily to prevent hoisting issues)
 function getGoogleClient(): OAuth2Client | null {
-    const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+    const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID)?.trim();
     if (!clientId) {
         return null;
     }
@@ -295,7 +295,7 @@ userRoutes.post("/google", authLimiter, async function (req: AuthRequest, res: R
     }
 
     try {
-        const clientId = process.env.GOOGLE_CLIENT_ID?.trim() as string;
+        const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID)?.trim() as string;
         const ticket = await googleClient.verifyIdToken({
             idToken: credential,
             audience: clientId
