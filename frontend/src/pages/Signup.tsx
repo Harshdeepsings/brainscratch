@@ -81,25 +81,35 @@ export const Signup = () => {
         const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
         if (!clientId || step !== "form") return;
 
-        const script = document.createElement("script");
-        script.src = "https://accounts.google.com/gsi/client";
-        script.async = true;
-        script.onload = () => {
+        const renderGoogleButton = () => {
             window.google?.accounts.id.initialize({
                 client_id: clientId,
                 callback: handleGoogleResponse
             });
-            window.google?.accounts.id.renderButton(
-                document.getElementById("google-signup-btn"),
-                {
-                    type: "standard",
-                    theme: document.documentElement.classList.contains("dark") ? "filled_black" : "outline",
-                    size: "large",
-                    width: 320,
-                    text: "continue_with"
-                }
-            );
+            const btnEl = document.getElementById("google-signup-btn");
+            if (btnEl) {
+                window.google?.accounts.id.renderButton(
+                    btnEl,
+                    {
+                        type: "standard",
+                        theme: document.documentElement.classList.contains("dark") ? "filled_black" : "outline",
+                        size: "large",
+                        width: 320,
+                        text: "signin_with"
+                    }
+                );
+            }
         };
+
+        if (window.google?.accounts?.id) {
+            renderGoogleButton();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://accounts.google.com/gsi/client";
+        script.async = true;
+        script.onload = renderGoogleButton;
         document.head.appendChild(script);
         return () => {
             if (document.head.contains(script)) {
