@@ -1,5 +1,11 @@
 import { Router } from "express";
 import { Response } from "express";
+import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+dotenv.config({ path: path.resolve(process.cwd(), "backend/.env") });
 import { UserSchema, UserSignupSchema, ProfileUpdateSchema } from "../userValidation";
 import { UserModel, ContentModel, LinkModel } from "../db";
 import bcrypt from "bcrypt";

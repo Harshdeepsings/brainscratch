@@ -1,5 +1,11 @@
+import path from "path";
 import dotenv from "dotenv";
+
+// Load environment variables reliably regardless of working directory
 dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(process.cwd(), "backend/.env") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
