@@ -21,13 +21,19 @@ const userRoutes = Router();
 // Constant-time dummy hash used to neutralize timing attacks when username does not exist
 const DUMMY_HASH = "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
-// Google OAuth client helper (reads environment lazily to prevent hoisting issues)
-function getGoogleClient(): OAuth2Client | null {
-    const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID)?.trim();
-    if (!clientId) {
-        return null;
-    }
-    return new OAuth2Client(clientId);
+const FALLBACK_GOOGLE_CLIENT_ID = "874276076457-805b58bjb7d7uoebornifpr9e82l9bt1.apps.googleusercontent.com";
+
+// Google OAuth client helper (reads environment lazily with fallback client ID)
+function getGoogleClientId(): string {
+    return (
+        process.env.GOOGLE_CLIENT_ID ||
+        process.env.VITE_GOOGLE_CLIENT_ID ||
+        FALLBACK_GOOGLE_CLIENT_ID
+    ).trim();
+}
+
+function getGoogleClient(): OAuth2Client {
+    return new OAuth2Client(getGoogleClientId());
 }
 
 // Strict authentication rate limiting (max 20 attempts per 15 min per IP)
@@ -286,16 +292,10 @@ userRoutes.post("/google", authLimiter, async function (req: AuthRequest, res: R
         return res.status(400).json({ message: "Google credential is required" });
     }
 
+    const clientId = getGoogleClientId();
     const googleClient = getGoogleClient();
-    if (!googleClient) {
-        console.error("Google OAuth error: GOOGLE_CLIENT_ID environment variable is missing on the server.");
-        return res.status(500).json({
-            message: "Google OAuth is not configured on the server. Please add GOOGLE_CLIENT_ID to your environment variables."
-        });
-    }
 
     try {
-        const clientId = (process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID)?.trim() as string;
         const ticket = await googleClient.verifyIdToken({
             idToken: credential,
             audience: clientId

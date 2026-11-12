@@ -82,7 +82,8 @@ export const Signup = () => {
     }, [navigate]);
 
     useEffect(() => {
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || (import.meta.env as unknown as Record<string, string>).GOOGLE_CLIENT_ID;
+        const fallbackClientId = "874276076457-805b58bjb7d7uoebornifpr9e82l9bt1.apps.googleusercontent.com";
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || (import.meta.env as unknown as Record<string, string>).GOOGLE_CLIENT_ID || fallbackClientId;
         if (!clientId || step !== "form") return;
 
         const renderGoogleButton = () => {
